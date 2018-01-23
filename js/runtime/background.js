@@ -17,7 +17,6 @@ export default class Background{
         if(this.top > window.innerHeight){
             this.top = 0;
         }
-        this.render(ctx);
     }
 
     render(ctx){
