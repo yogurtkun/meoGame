@@ -6,27 +6,22 @@ let ctx = canvas.getContext('2d')
 export default class Main{
     constructor(){
         this.restart();
-        wx.onAccelerometerChange(function(res){
-            console.log(res);
-        });
     }
 
     update(){
         this.bg.render(ctx);
+        if(this.dataBus.gameOver === false){
+            this.bg.update();
+            canvas.removeEventListener('touchstart', this.touchHandler);
+        }
+        else{
+            this.bg.drawStart(ctx);
+        }
     }
 
     loop(){
-
+        this.dataBus.frame += 1;
         this.update();
-
-        if(this.dataBus.gameOver === false){
-            this.bg.update();
-            ctx.removeEventListener('touchstart', this.touchHandler);
-        }
-        else{
-            ctx.font = '48px serif';
-            ctx.fillText("Start",0,0);
-        }
 
         window.requestAnimationFrame(
             this.loop.bind(this),
@@ -38,8 +33,9 @@ export default class Main{
         let x = e.touches[0].clientX;
         let y = e.touches[0].clientY;
 
-        if (x <= 24 && y <= 24)
+        if (this.bg.isStart(x,y)){
             this.dataBus.gameOver = false;
+        }
     }
 
     restart(){
@@ -47,7 +43,7 @@ export default class Main{
         this.bg.render(ctx);
         this.dataBus = new DataBus();
 
-        canvas.addEventListener('touchstart', this.touchHandler);
+        canvas.addEventListener('touchstart', this.touchHandler.bind(this));
 
         window.requestAnimationFrame(
             this.loop.bind(this),

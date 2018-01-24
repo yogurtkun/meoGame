@@ -15,6 +15,7 @@ export default class DataBus {
 
     reset() {
         this.gameOver = true;
+        this.frame = 0;
     }
 
 }

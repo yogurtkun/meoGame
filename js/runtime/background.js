@@ -1,9 +1,10 @@
-const screenWidth  = window.innerWidth
-const screenHeight = window.innerHeight
+import Sprite,{screenHeight,screenWidth} from "../base/element"
 
 const BG_IMG_SRC   = 'images/bg.jpg'
 const BG_WIDTH     = 512
 const BG_HEIGHT    = 512
+
+const START_ICON = 'images/start.png'
 
 export default class Background{
     constructor(){
@@ -17,6 +18,15 @@ export default class Background{
         if(this.top > window.innerHeight){
             this.top = 0;
         }
+    }
+
+    drawStart(ctx){
+        this.start = new Sprite(START_ICON,100,50,screenWidth/2-50,screenHeight/2-25);
+        this.start.drawToCanvas(ctx);
+    }
+
+    isStart(x,y){
+        return this.start.isClick(x,y);
     }
 
     render(ctx){
