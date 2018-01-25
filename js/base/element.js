@@ -1,4 +1,4 @@
-export const screenWidth  = window.innerWidth
+export const screenWidth = window.innerWidth
 export const screenHeight = window.innerHeight
 /**
  * 游戏基础的精灵类
@@ -33,8 +33,10 @@ export default class Sprite {
         )
     }
 
-    isClick(x,y){
-        if( (x >= this.x && x <= this.x+this.width) && (y >= this.y && y <= this.y+this.height) )
+    isClick(e) {
+        let x = e.touches[0].clientX
+        let y = e.touches[0].clientY
+        if ((x >= this.x && x <= this.x + this.width) && (y >= this.y && y <= this.y + this.height))
             return true;
         else
             return false;

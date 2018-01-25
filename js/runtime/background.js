@@ -25,10 +25,6 @@ export default class Background{
         this.start.drawToCanvas(ctx);
     }
 
-    isStart(x,y){
-        return this.start.isClick(x,y);
-    }
-
     render(ctx){
         ctx.drawImage(
             this.img,
