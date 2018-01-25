@@ -1,6 +1,7 @@
 import Background from "./runtime/background";
 import DataBus from "./databus";
 import Cup from "./item/cup";
+import Music from "./runtime/music"
 
 let ctx = canvas.getContext('2d')
 
@@ -28,6 +29,10 @@ export default class Main{
         this.dataBus.frame += 1;
         this.update();
 
+        if (this.cup.touch && this.dataBus.frame % 30 == 0 ) {
+            this.music.meo();
+        }
+
         window.requestAnimationFrame(
             this.loop.bind(this),
             canvas
@@ -46,6 +51,7 @@ export default class Main{
         this.bg.render(ctx);
         this.dataBus = new DataBus();
         this.cup = new Cup();
+        this.music = new Music();
 
         canvas.addEventListener('touchstart', this.touchHandler.bind(this));
 
