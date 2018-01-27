@@ -14,6 +14,48 @@ export default class Cup extends Sprite {
         this.visible = false;
 
         this.touch = false;
+
+        this.stack = [];
+    }
+
+    drawCup(ctx){
+        this.drawToCanvas(ctx);
+        let last = this;
+
+        for(var i = 0 ; i < this.stack.length ; i ++){
+            this.stack[i].x = last.x + this.stack[i].delta;
+            last = this.stack[i];
+            this.stack[i].drawToCanvas(ctx);
+        }
+    }
+
+    isCollideWith(cat){
+        var topCat = this;
+        if(this.stack.length !== 0)
+            topCat = this.stack[this.stack.length - 1];
+
+        let centralX = cat.x + cat.width/2;
+        let centralY = cat.y + cat.height/2;
+
+        if (centralX >= topCat.x &&
+            centralX <= topCat.x + topCat.width &&
+            centralY >= topCat.y &&
+            centralY <= topCat.y + topCat.height/2
+        ) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    addNewCat(cat){
+        var topCat = this;
+        if(this.stack.length !== 0)
+            topCat = this.stack[this.stack.length - 1];
+        
+        cat.delta = cat.x - topCat.x;
+        cat.y = topCat.y - cat.height;
+        this.stack.push(cat);
     }
 
     initEvent() {
