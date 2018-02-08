@@ -25,6 +25,12 @@ export default class Background{
         this.start.drawToCanvas(ctx);
     }
 
+    drawScore(score,ctx){
+        ctx.font="30px Verdana";
+        ctx.fillStyle = "#f0f0f0"; 
+        ctx.fillText("Score:"+score,10,30);
+    }
+
     render(ctx){
         ctx.drawImage(
             this.img,

@@ -19,12 +19,15 @@ export default class Cup extends Sprite {
     }
 
     drawCup(ctx){
-        this.drawToCanvas(ctx);
         let last = this;
 
         for(var i = 0 ; i < this.stack.length ; i ++){
             this.stack[i].x = last.x + this.stack[i].delta;
             last = this.stack[i];
+        }
+
+        this.drawToCanvas(ctx);
+        for(var i = 0 ; i < this.stack.length ; i++){
             this.stack[i].drawToCanvas(ctx);
         }
     }
@@ -54,8 +57,28 @@ export default class Cup extends Sprite {
             topCat = this.stack[this.stack.length - 1];
         
         cat.delta = cat.x - topCat.x;
-        cat.y = topCat.y - cat.height;
         this.stack.push(cat);
+
+        var len = 2;
+        var last_y = screenHeight - 20;
+        if(this.stack.length < 2){
+            this.y = last_y - this.height;
+            last_y = this.y;
+            len = 1;
+        }else{
+            this.visible = false;
+        }
+
+        var start = (this.stack.length - len>=0?this.stack.length - len :0);
+
+        for(var i= 0; i < this.stack.length ; i ++){
+            if(i < start){
+                this.stack[i].visible = false;
+            }else{
+                this.stack[i].y = last_y - this.stack[i].height;
+                last_y = this.stack[i].y;
+            }
+        }
     }
 
     initEvent() {

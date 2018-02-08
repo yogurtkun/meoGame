@@ -32,4 +32,8 @@ export default class Cat extends Sprite{
         }
     }
 
+    getScore(){
+        return 1;
+    }
+
 }

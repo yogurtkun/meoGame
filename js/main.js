@@ -34,11 +34,13 @@ export default class Main {
             this.cat.drawToCanvas(ctx);
             if(this.cup.isCollideWith(this.cat)){
                 this.cup.addNewCat(this.cat);
+                this.score += this.cat.getScore();
                 this.cat = null;
             }
         }
 
         this.cup.drawCup(ctx);
+        this.bg.drawScore(this.score,ctx);
 
         return true;
     }
@@ -76,6 +78,7 @@ export default class Main {
         this.music = new Music();
         this.cat = null;
         this.level = 1;
+        this.score = 0;
 
         canvas.addEventListener('touchstart', this.touchHandler.bind(this));
 
