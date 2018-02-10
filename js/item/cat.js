@@ -15,13 +15,13 @@ export default class Cat extends Sprite{
         this.x = rnd(0,screenWidth - CAT_WIDTH);
 
         this.visible = true;
-        this.speed = level*20;
+        this.speed = level*10;
 
         this.delta = 0;
     }
 
     update(frame){
-        if(frame % 20 == 0){
+        if(frame % 2 == 0){
             this.y += this.speed;
         }
 
