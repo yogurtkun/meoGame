@@ -1,0 +1,33 @@
+{
+  "name": "meogame",
+  "version": "1.0.0",
+  "description": "猫娘冰淇淋游戏",
+  "main": "game.js",
+  "dependencies": {
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint": "^4.17.0",
+    "lodash": "^4.17.5"
+  },
+  "devDependencies": {
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./js"
+  },
+  "pre-push": [
+    "lint",
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yogurtkun/meoGame.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yogurtkun/meoGame/issues"
+  },
+  "homepage": "https://github.com/yogurtkun/meoGame#readme"
+}

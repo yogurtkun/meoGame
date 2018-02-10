@@ -1,0 +1,15 @@
+{
+  "extends": "airbnb",
+  "globals": {
+    "Audio": true,
+    "Image": true,
+    "window": true,
+    "canvas": true,
+  },
+  "rules": {
+  	"object-curly-spacing": "off",
+  	"no-mixed-operators": "off",
+  	"class-methods-use-this": "off",
+  	"no-plusplus": "off",
+  }
+}
