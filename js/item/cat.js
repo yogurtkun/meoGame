@@ -1,39 +1,63 @@
-import Sprite, { screenWidth, screenHeight } from "../base/element"
+import Sprite, {screenWidth, screenHeight} from '../base/element';
 
-const CAT_IMG_SRC = 'images/enemy.png'
-const CAT_WIDTH   = 60
-const CAT_HEIGHT  = 60
+const CAT_IMG_SRC = 'images/enemy.png';
+const CAT_WIDTH = 60;
+const CAT_HEIGHT = 60;
 
-function rnd(start, end){
-    return Math.floor(Math.random() * (end - start) + start)
+export const FALL_TYPE = {
+  STRAIGHT: 0,
+  CURVE: 1,
+};
+
+function random(start, end) {
+  return Math.floor(Math.random() * (end - start + 1) + start);
+}
+
+export default class Cat extends Sprite {
+  constructor(level = 1, type = null) {
+    super(CAT_IMG_SRC, CAT_WIDTH, CAT_HEIGHT);
+    this.t = 0;
+    this.speed = level;
+    this.score = level;
+    this.type = type === null ? random(0, 1) : type; // Currently randomly pick from straight line or curve line.
+    this.init();
   }
 
-export default class Cat extends Sprite{
-    constructor(level){
-        super(CAT_IMG_SRC,CAT_WIDTH,CAT_HEIGHT);
+  init() {
+    if (this.type === FALL_TYPE.STRAIGHT) {
+      this.x = random(0, screenWidth - CAT_WIDTH);
+      this.y = 0;
+    } else if (this.type === FALL_TYPE.CURVE) {
+      this.x = random(0, 1) === 0 ? 0 : screenWidth - CAT_WIDTH;
+      this.endX = random(0, screenWidth - CAT_WIDTH);
+      this.a = (this.endX - this.x) / (screenHeight - CAT_HEIGHT) * 3;
+      this.y = 0;
+    } else {
+      throw new Error('The type of Cat is invalid!');
+    }
+  }
 
-        this.x = rnd(0,screenWidth - CAT_WIDTH);
+  acceleration(t) {
+    return 1 + t / 50;
+  }
 
-        this.visible = true;
-        this.speed = level*10;
+  update() {
+    this.t++;
 
-        this.delta = 0;
+    if (this.type === FALL_TYPE.STRAIGHT) {
+      this.y += this.acceleration(this.t);
+    } else if (this.type === FALL_TYPE.CURVE) {
+      this.y += this.acceleration(this.t);
+      this.x += this.a;
     }
 
-    update(frame){
-        if(frame % 2 == 0){
-            this.y += this.speed;
-        }
-
-        if (this.y > screenHeight - CAT_HEIGHT) {
-            return false;
-        }else{
-            return true;
-        }
+    if (this.y > screenHeight - CAT_HEIGHT) {
+      return false;
     }
+    return true;
+  }
 
-    getScore(){
-        return 1;
-    }
-
+  getScore() {
+    return this.score;
+  }
 }
