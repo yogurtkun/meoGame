@@ -2,7 +2,7 @@ import Background from './runtime/background';
 import DataBus from './databus';
 import Cup from './item/cup';
 import Music from './runtime/music';
-import Cat, {FALL_TYPE} from './item/cat';
+import Cat from './item/cat';
 
 const ctx = canvas.getContext('2d');
 const dataBus = new DataBus();
@@ -32,6 +32,7 @@ export default class Main {
     if (this.cat) {
       this.cat.drawToCanvas(ctx);
       if (this.cup.isCollideWith(this.cat)) {
+        this.music.meo();
         this.cup.addNewCat(this.cat);
         this.score += this.cat.getScore();
         this.cat = null;
@@ -49,10 +50,6 @@ export default class Main {
     if (!this.update()) {
       this.restart();
       return;
-    }
-
-    if (this.cup.touch && dataBus.frame % 30 === 0) {
-      this.music.meo();
     }
 
     window.requestAnimationFrame(

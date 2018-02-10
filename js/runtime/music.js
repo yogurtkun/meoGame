@@ -3,6 +3,7 @@ let instance;
 /**
  * 统一的音效管理器
  */
+
 export default class Music {
   constructor() {
     if (instance) {
@@ -12,7 +13,7 @@ export default class Music {
     instance = this;
 
     this.meoAudio = new Audio();
-    this.meoAudio.src = 'audio/boom.mp3';
+    this.meoAudio.src = 'audio/meow.mp3';
   }
 
   meo() {
