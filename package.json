@@ -18,7 +18,7 @@
     "lint": "eslint ./js"
   },
   "pre-push": [
-    "lint",
+    "lint"
   ],
   "repository": {
     "type": "git",
