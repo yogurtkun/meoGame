@@ -17,7 +17,6 @@ export default class Cat extends Sprite {
   constructor(level = 1, type = null) {
     super(CAT_IMG_SRC, CAT_WIDTH, CAT_HEIGHT);
     this.t = 0;
-    this.speed = level;
     this.score = level;
     this.type = type === null ? random(0, 1) : type; // Currently randomly pick from straight line or curve line.
     this.init();
@@ -29,16 +28,22 @@ export default class Cat extends Sprite {
       this.y = 0;
     } else if (this.type === FALL_TYPE.CURVE) {
       this.x = random(0, 1) === 0 ? 0 : screenWidth - CAT_WIDTH;
-      this.endX = random(0, screenWidth - CAT_WIDTH);
-      this.a = (this.endX - this.x) / (screenHeight - CAT_HEIGHT) * 3;
+      this.a = random(CAT_WIDTH - screenWidth, screenWidth - CAT_WIDTH) / (screenHeight - CAT_HEIGHT) * 15;
       this.y = 0;
     } else {
       throw new Error('The type of Cat is invalid!');
     }
   }
 
+  isTouchWall() {
+    if (this.x < 0 || this.x + this.width > screenWidth) {
+      return true;
+    }
+    return false;
+  }
+
   acceleration(t) {
-    return 1 + t / 50;
+    return 1 + t / 20;
   }
 
   update() {
@@ -49,6 +54,10 @@ export default class Cat extends Sprite {
     } else if (this.type === FALL_TYPE.CURVE) {
       this.y += this.acceleration(this.t);
       this.x += this.a;
+    }
+
+    if (this.isTouchWall()) {
+      this.a = 0 - this.a;
     }
 
     if (this.y > screenHeight - CAT_HEIGHT) {
