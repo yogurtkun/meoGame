@@ -30,7 +30,7 @@ export default class Main {
     }
 
     if (this.cat) {
-      this.cat.drawToCanvas(ctx);
+      this.cat.drawCat(ctx);
       if (this.cup.isCollideWith(this.cat)) {
         this.music.meo();
         this.cup.addNewCat(this.cat);

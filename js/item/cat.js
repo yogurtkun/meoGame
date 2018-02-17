@@ -17,9 +17,25 @@ export default class Cat extends Sprite {
   constructor(level = 1, type = null) {
     super(CAT_IMG_SRC, CAT_WIDTH, CAT_HEIGHT);
     this.t = 0;
+    this.trails = [];
     this.score = level;
+    this.fallen = true;
     this.type = type === null ? random(0, 1) : type; // Currently randomly pick from straight line or curve line.
     this.init();
+  }
+
+  drawCat(ctx) {
+    this.trails.forEach((pos) => {
+      ctx.drawImage(
+        this.img,
+        pos[0],
+        pos[1],
+        this.width,
+        this.height,
+      ).bind(this);
+    });
+
+    this.drawToCanvas(ctx);
   }
 
   init() {
@@ -48,6 +64,10 @@ export default class Cat extends Sprite {
 
   update() {
     this.t++;
+    if (this.trails.length > 5) {
+      this.trails.shift();
+    }
+    this.trails.push([this.x, this.y]);
 
     if (this.type === FALL_TYPE.STRAIGHT) {
       this.y += this.acceleration(this.t);
@@ -67,6 +87,7 @@ export default class Cat extends Sprite {
   }
 
   getScore() {
+    this.fallen = false;
     return this.score;
   }
 }
