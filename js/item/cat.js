@@ -41,7 +41,7 @@ export default class Cat extends Sprite {
     setTimeout(() => {
       this.height = Math.floor(this.img.naturalHeight / SCALE_SIZE);
       this.width = Math.floor(this.img.naturalWidth / SCALE_SIZE);
-    }, 200);
+    }, 20);
 
     this.note = note;
     this.t = 0;

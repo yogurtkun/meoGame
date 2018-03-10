@@ -35,9 +35,6 @@ export default class Main {
       this.cup.initEvent();
 
       if (dataBus.frame % GENERATE_SPEED === 0) {
-        console.log(genNum);
-        console.log(this.sequence.length);
-
         if (this.sequence[genNum] !== null && genNum < this.sequence.length) {
           this.onAirCat.push(new Cat(this.level, null, genNum));
         }
@@ -62,12 +59,12 @@ export default class Main {
       if (this.cup.isCollideWith(this.onAirCat[0])) {
         this.music.meo();
         this.cup.addNewCat(this.onAirCat[0]);
-        this.score += this.onAirCat[0];
+        this.score += this.onAirCat[0].getScore();
         this.onAirCat.shift();
       }
     }
 
-    if (this.onAirCat.length === 0 && genNum >= this.sequence.length + 1) {
+    if (this.onAirCat.length === 0 && genNum >= this.sequence.length + 2) {
       return false;
     }
 

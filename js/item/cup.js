@@ -1,17 +1,18 @@
 import Sprite, {screenWidth, screenHeight} from '../base/element';
 
 const CUP_IMAGE_SRC = 'images/dantong.png';
-const CUP_WIDTH = 120;
-const CUP_HEIGHT = 200;
+const JUDGE_LINE = Math.floor(screenHeight / 4);
 
 const EXTEND_LEN = 50;
 
 export default class Cup extends Sprite {
   constructor() {
-    super(CUP_IMAGE_SRC, CUP_WIDTH, CUP_HEIGHT);
+    const cupWidth = Math.floor(screenWidth / 3.2);
+    const cupHeight = Math.floor(screenHeight / 4.1);
+    super(CUP_IMAGE_SRC, cupWidth, cupHeight);
 
     this.x = screenWidth / 2 - this.width / 2;
-    this.y = screenHeight - this.height;
+    this.y = screenHeight - JUDGE_LINE;
 
     this.visible = false;
 
@@ -62,25 +63,21 @@ export default class Cup extends Sprite {
     cat.delta = cat.x - topCat.x;
     this.stack.push(cat);
 
-    let len = 2;
-    let lastY = screenHeight;
-    if (this.stack.length < 2) {
-      this.y = lastY - this.height;
-      lastY = this.y;
-      len = 1;
+    let lastY = screenHeight - JUDGE_LINE;
+    for (let i = this.stack.length - 1; i >= 0; i--) {
+      this.stack[i].y = lastY;
+      if (lastY < screenHeight) {
+        this.stack[i].visible = true;
+      } else {
+        this.stack[i].visible = false;
+      }
+      lastY += this.stack[i].height;
+    }
+    this.y = lastY;
+    if (lastY < screenHeight) {
+      this.visible = true;
     } else {
       this.visible = false;
-    }
-
-    const start = this.stack.length - len >= 0 ? this.stack.length - len : 0;
-
-    for (let i = 0; i < this.stack.length; i++) {
-      if (i < start) {
-        this.stack[i].visible = false;
-      } else {
-        this.stack[i].y = lastY - this.stack[i].height;
-        lastY = this.stack[i].y;
-      }
     }
   }
 
