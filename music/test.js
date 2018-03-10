@@ -1,8 +1,2 @@
-const rhythm = {
-  0: 'do',
-  1: 're',
-  2: 'fa',
-  3: null,
-  4: null,
-  5: 'mi',
-};
+export const rhythm = ['do', 'ri', 'mi', null, null, 'la', 'fa'];
+

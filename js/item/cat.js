@@ -35,13 +35,15 @@ function generateCat() {
 }
 
 export default class Cat extends Sprite {
-  constructor(level = 1, type = null) {
+  constructor(level = 1, type = null, note = 0) {
     const catImgSrc = generateCat();
     super(catImgSrc, CAT_WIDTH, CAT_HEIGHT);
     setTimeout(() => {
       this.height = Math.floor(this.img.naturalHeight / SCALE_SIZE);
       this.width = Math.floor(this.img.naturalWidth / SCALE_SIZE);
     }, 200);
+
+    this.note = note;
     this.t = 0;
     this.trails = [];
     this.score = level;
@@ -84,6 +86,13 @@ export default class Cat extends Sprite {
     return false;
   }
 
+  isTouchGround() {
+    if (this.y > screenHeight - this.height) {
+      return true;
+    }
+    return false;
+  }
+
   acceleration(t) {
     return 1 + t / 20;
   }
@@ -105,11 +114,6 @@ export default class Cat extends Sprite {
     if (this.isTouchWall()) {
       this.a = 0 - this.a;
     }
-
-    if (this.y > screenHeight - this.height) {
-      return false;
-    }
-    return true;
   }
 
   getScore() {

@@ -3,11 +3,12 @@ import DataBus from './databus';
 import Cup from './item/cup';
 import Music from './runtime/music';
 import Cat from './item/cat';
-import rhythm from '../music/test';
+import {rhythm} from '../music/test';
 
 const ctx = canvas.getContext('2d');
 const dataBus = new DataBus();
 const MUSIC_ONLINE = false;
+const GENERATE_SPEED = 80;
 
 function loadSequence() {
   if (MUSIC_ONLINE === false) {
@@ -27,28 +28,47 @@ export default class Main {
   update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.bg.render(ctx);
+    const genNum = Math.floor(dataBus.frame / GENERATE_SPEED) - 1;
     if (dataBus.gameOver === false) {
       this.bg.update();
       canvas.removeEventListener('touchstart', this.touchHandler);
       this.cup.initEvent();
-      if (!this.cat) {
-        this.cat = new Cat(this.level);
+
+      if (dataBus.frame % GENERATE_SPEED === 0) {
+        console.log(genNum);
+        console.log(this.sequence.length);
+
+        if (this.sequence[genNum] !== null && genNum < this.sequence.length) {
+          this.onAirCat.push(new Cat(this.level, null, genNum));
+        }
       }
-      if (!this.cat.update(dataBus.frame)) {
-        return false;
+
+      this.onAirCat.forEach((cat) => {
+        cat.update(dataBus.frame);
+      });
+
+      if (this.onAirCat.length > 0 && this.onAirCat[0].isTouchGround()) {
+        this.onAirCat.shift();
       }
     } else {
       this.bg.drawStart(ctx);
     }
 
-    if (this.cat) {
-      this.cat.drawCat(ctx);
-      if (this.cup.isCollideWith(this.cat)) {
+    this.onAirCat.forEach((cat) => {
+      cat.drawCat(ctx);
+    });
+
+    if (this.onAirCat.length > 0) {
+      if (this.cup.isCollideWith(this.onAirCat[0])) {
         this.music.meo();
-        this.cup.addNewCat(this.cat);
-        this.score += this.cat.getScore();
-        this.cat = null;
+        this.cup.addNewCat(this.onAirCat[0]);
+        this.score += this.onAirCat[0];
+        this.onAirCat.shift();
       }
+    }
+
+    if (this.onAirCat.length === 0 && genNum >= this.sequence.length + 1) {
+      return false;
     }
 
     this.cup.drawCup(ctx);
@@ -61,7 +81,9 @@ export default class Main {
    * Frame loop
    */
   loop() {
-    dataBus.frame += 1;
+    if (dataBus.gameOver === false) {
+      dataBus.frame += 1;
+    }
     if (!this.update()) {
       this.restart();
       return;
@@ -90,13 +112,12 @@ export default class Main {
     this.bg.render(ctx);
     this.cup = new Cup();
     this.music = new Music();
-    this.cat = null;
     this.level = 1;
     this.score = 0;
 
     this.onAirCat = [];
 
-    this.Sequence = loadSequence();
+    this.sequence = loadSequence();
 
     canvas.addEventListener('touchstart', this.touchHandler.bind(this));
 
