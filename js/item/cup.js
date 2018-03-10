@@ -1,15 +1,17 @@
 import Sprite, {screenWidth, screenHeight} from '../base/element';
 
-const CUP_IMAGE_SRC = 'images/hero.png';
-const CUP_WIDTH = 80;
-const CUP_HEIGHT = 80;
+const CUP_IMAGE_SRC = 'images/dantong.png';
+const CUP_WIDTH = 120;
+const CUP_HEIGHT = 200;
+
+const EXTEND_LEN = 50;
 
 export default class Cup extends Sprite {
   constructor() {
     super(CUP_IMAGE_SRC, CUP_WIDTH, CUP_HEIGHT);
 
     this.x = screenWidth / 2 - this.width / 2;
-    this.y = screenHeight - this.height - 20;
+    this.y = screenHeight - this.height;
 
     this.visible = false;
 
@@ -61,7 +63,7 @@ export default class Cup extends Sprite {
     this.stack.push(cat);
 
     let len = 2;
-    let lastY = screenHeight - 20;
+    let lastY = screenHeight;
     if (this.stack.length < 2) {
       this.y = lastY - this.height;
       lastY = this.y;
@@ -88,16 +90,36 @@ export default class Cup extends Sprite {
     canvas.addEventListener('touchend', this.cupEnd.bind(this));
   }
 
-  setPosition(x) {
-    let disX = x - this.width / 2;
+  getDelta() {
+    let totalDelta = 0;
 
-    if (disX < 0) {
-      disX = 0;
-    } else if (disX > screenWidth - this.width) {
-      disX = screenWidth - this.width;
+    for (let i = 0; i < this.stack.length - 1; i++) {
+      totalDelta += this.stack[i].delta;
     }
 
-    this.x = disX;
+    return totalDelta;
+  }
+
+  getBaseEle() {
+    if (this.stack.length < 2) {
+      return this;
+    }
+
+    return this.stack[this.stack.length - 2];
+  }
+
+  setPosition(x) {
+    const baseEle = this.getBaseEle();
+    const delta = this.getDelta();
+    let disX = x - baseEle.width / 2;
+
+    if (disX < -EXTEND_LEN) {
+      disX = -EXTEND_LEN;
+    } else if (disX > screenWidth - baseEle.width + EXTEND_LEN) {
+      disX = screenWidth - baseEle.width + EXTEND_LEN;
+    }
+
+    this.x = disX - delta;
   }
 
   cupStart(e) {

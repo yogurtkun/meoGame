@@ -1,8 +1,21 @@
 import Sprite, {screenWidth, screenHeight} from '../base/element';
 
-const CAT_IMG_SRC = 'images/enemy.png';
 const CAT_WIDTH = 60;
 const CAT_HEIGHT = 60;
+
+const SCALE_SIZE = 3;
+
+const CAT_TYPE = {
+  0: 's',
+  1: 'm',
+  2: 'l',
+};
+
+const TYPE_NUM = {
+  s: 5,
+  m: 7,
+  l: 4,
+};
 
 export const FALL_TYPE = {
   STRAIGHT: 0,
@@ -13,9 +26,22 @@ function random(start, end) {
   return Math.floor(Math.random() * (end - start + 1) + start);
 }
 
+function generateCat() {
+  const catType = CAT_TYPE[random(0, 2)];
+  const catNum = random(1, TYPE_NUM[catType]);
+  const imgSrc = `images/${catType}${catNum}.png`;
+
+  return imgSrc;
+}
+
 export default class Cat extends Sprite {
   constructor(level = 1, type = null) {
-    super(CAT_IMG_SRC, CAT_WIDTH, CAT_HEIGHT);
+    const catImgSrc = generateCat();
+    super(catImgSrc, CAT_WIDTH, CAT_HEIGHT);
+    setTimeout(() => {
+      this.height = Math.floor(this.img.naturalHeight / SCALE_SIZE);
+      this.width = Math.floor(this.img.naturalWidth / SCALE_SIZE);
+    }, 200);
     this.t = 0;
     this.trails = [];
     this.score = level;
@@ -32,7 +58,7 @@ export default class Cat extends Sprite {
         pos[1],
         this.width,
         this.height,
-      ).bind(this);
+      );
     });
 
     this.drawToCanvas(ctx);
@@ -40,11 +66,11 @@ export default class Cat extends Sprite {
 
   init() {
     if (this.type === FALL_TYPE.STRAIGHT) {
-      this.x = random(0, screenWidth - CAT_WIDTH);
+      this.x = random(0, screenWidth - this.width);
       this.y = 0;
     } else if (this.type === FALL_TYPE.CURVE) {
-      this.x = random(0, 1) === 0 ? 0 : screenWidth - CAT_WIDTH;
-      this.a = random(CAT_WIDTH - screenWidth, screenWidth - CAT_WIDTH) / (screenHeight - CAT_HEIGHT) * 15;
+      this.x = random(0, 1) === 0 ? 0 : screenWidth - this.width;
+      this.a = random(this.width - screenWidth, screenWidth - this.width) / (screenHeight - this.height) * 15;
       this.y = 0;
     } else {
       throw new Error('The type of Cat is invalid!');
@@ -80,7 +106,7 @@ export default class Cat extends Sprite {
       this.a = 0 - this.a;
     }
 
-    if (this.y > screenHeight - CAT_HEIGHT) {
+    if (this.y > screenHeight - this.height) {
       return false;
     }
     return true;

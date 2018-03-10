@@ -12,6 +12,9 @@ export default class Main {
     this.restart();
   }
 
+  /**
+   *
+   */
   update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.bg.render(ctx);
