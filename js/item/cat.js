@@ -4,6 +4,7 @@ const CAT_WIDTH = 60;
 const CAT_HEIGHT = 60;
 
 const SCALE_SIZE = 3;
+export const ACCELERATION = 0.2;
 
 const CAT_TYPE = {
   0: 's',
@@ -17,12 +18,18 @@ const TYPE_NUM = {
   l: 4,
 };
 
+const TYPE_SCOPE = {
+  s: 1.5,
+  m: 1.1,
+  l: 1,
+};
+
 export const FALL_TYPE = {
   STRAIGHT: 0,
   CURVE: 1,
 };
 
-function random(start, end) {
+export function random(start, end) {
   return Math.floor(Math.random() * (end - start + 1) + start);
 }
 
@@ -31,28 +38,35 @@ function generateCat() {
   const catNum = random(1, TYPE_NUM[catType]);
   const imgSrc = `images/${catType}${catNum}.png`;
 
-  return imgSrc;
+  return [imgSrc, catType];
 }
 
 export default class Cat extends Sprite {
-  constructor(level = 1, type = null, note = 0) {
-    const catImgSrc = generateCat();
-    super(catImgSrc, CAT_WIDTH, CAT_HEIGHT);
+  constructor(level = 1, type = null, note = 0, initSpeed = 0) {
+    const catImg = generateCat();
+    super(catImg[0], CAT_WIDTH, CAT_HEIGHT);
+    this.ready = false;
     setTimeout(() => {
-      this.height = Math.floor(this.img.naturalHeight / SCALE_SIZE);
-      this.width = Math.floor(this.img.naturalWidth / SCALE_SIZE);
-    }, 20);
+      this.height = Math.floor(this.img.naturalHeight / SCALE_SIZE * TYPE_SCOPE[catImg[1]]);
+      this.width = Math.floor(this.img.naturalWidth / SCALE_SIZE * TYPE_SCOPE[catImg[1]]);
 
+      this.init();
+      this.ready = true;
+    }, 100);
+
+    this.initSpeed = initSpeed;
     this.note = note;
     this.t = 0;
     this.trails = [];
     this.score = level;
     this.fallen = true;
     this.type = type === null ? random(0, 1) : type; // Currently randomly pick from straight line or curve line.
-    this.init();
   }
 
   drawCat(ctx) {
+    if (!this.ready) {
+      return;
+    }
     this.trails.forEach((pos) => {
       ctx.drawImage(
         this.img,
@@ -69,11 +83,12 @@ export default class Cat extends Sprite {
   init() {
     if (this.type === FALL_TYPE.STRAIGHT) {
       this.x = random(0, screenWidth - this.width);
-      this.y = 0;
+      this.y = 1 / 8 * screenHeight;
     } else if (this.type === FALL_TYPE.CURVE) {
       this.x = random(0, 1) === 0 ? 0 : screenWidth - this.width;
-      this.a = random(this.width - screenWidth, screenWidth - this.width) / (screenHeight - this.height) * 15;
-      this.y = 0;
+      // this.a = random(this.width - screenWidth, screenWidth - this.width) / (screenHeight - this.height) * 15;
+      this.a = ACCELERATION;
+      this.y = 1 / 8 * screenHeight;
     } else {
       throw new Error('The type of Cat is invalid!');
     }
@@ -93,11 +108,14 @@ export default class Cat extends Sprite {
     return false;
   }
 
-  acceleration(t) {
-    return 1 + t / 20;
+  getPosition(t) {
+    return screenHeight / 8 + this.initSpeed * t + ACCELERATION * t * t / 2;
   }
 
   update() {
+    if (!this.ready) {
+      return;
+    }
     this.t++;
     if (this.trails.length > 5) {
       this.trails.shift();
@@ -105,10 +123,10 @@ export default class Cat extends Sprite {
     this.trails.push([this.x, this.y]);
 
     if (this.type === FALL_TYPE.STRAIGHT) {
-      this.y += this.acceleration(this.t);
+      this.y = this.getPosition(this.t);
     } else if (this.type === FALL_TYPE.CURVE) {
-      this.y += this.acceleration(this.t);
-      this.x += this.a;
+      this.y = this.getPosition(this.t);
+      this.x += this.a * 20;
     }
 
     if (this.isTouchWall()) {

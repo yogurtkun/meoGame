@@ -121,7 +121,16 @@ export default class Cup extends Sprite {
 
   cupStart(e) {
     e.preventDefault();
-    if (!this.isClick(e)) {
+    let isTouch = false;
+    this.stack.forEach((cat) => {
+      if (cat.isClick(e)) {
+        isTouch = true;
+      }
+    });
+    if (this.isClick(e)) {
+      isTouch = true;
+    }
+    if (!isTouch) {
       return;
     }
 
