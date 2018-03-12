@@ -13,7 +13,7 @@ const GENERATE_SPEED = 30;
 let INIT_FRAME = 0;
 const UP_RATIO = 1 / 8;
 
-const MAX_TIME = Math.sqrt(2 * (1 - 1 / 4 - UP_RATIO) * screenHeight / ACCELERATION);
+// const MAX_TIME = Math.sqrt(2 * (1 - 1 / 4 - UP_RATIO) * screenHeight / ACCELERATION);
 
 function loadSequence() {
   if (MUSIC_ONLINE === false) {
@@ -66,7 +66,7 @@ export default class Main {
 
       if (genNum !== -1) {
         this.onAirCat.push(new Cat(this.level, null, this.sequence[genNum], this.speedSeq[genNum]));
-        console.log(`Gen${genNum}`);
+        // console.log(`Gen${genNum}`);
       }
 
       this.onAirCat.forEach((cat) => {
@@ -148,7 +148,7 @@ export default class Main {
     INIT_FRAME = this.timeSeq[0] - 10;
     dataBus.reset(INIT_FRAME);
     this.music = new Music(this.sequence);
-    console.log(this.timeSeq);
+    // console.log(this.timeSeq);
 
     canvas.addEventListener('touchstart', this.touchHandler.bind(this));
 
